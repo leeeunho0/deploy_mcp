@@ -6,4 +6,4 @@ spring:
       api-key: ${OPENAI_API_KEY}
       chat:
         model: gpt-4o-mini
-service-key: ${SERVICE_KEY}
+service-key: ${service_key}
