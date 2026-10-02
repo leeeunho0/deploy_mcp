@@ -20,6 +20,10 @@ public interface TestClient {
 
   // 여러개를 가져올때 사용하는 방법
   @GetMapping ("/posts")
-  List<Map<String,Object>> getPost();
+  List<Map<String,Object>> getPosts();
+
+  // 오픈페인도구가 자동으로 rest api 코드 만들어서 데이터 받는다.
+  @GetMapping ("/comments")
+  List<Map<String, Object>> getComments();
 
 }
