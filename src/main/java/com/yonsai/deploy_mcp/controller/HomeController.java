@@ -6,53 +6,57 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yonsai.deploy_mcp.client.PublicClient;
 import com.yonsai.deploy_mcp.client.TestClient;
+import com.yonsai.deploy_mcp.service.PublicDataService;
 
 import tools.jackson.databind.JsonNode;
 
-@RestController
+@Controller 
 public class HomeController {
 
-  @Autowired 
+  @Autowired
   private TestClient 자동코드작성담당자;
 
-  @Value ("${SERVICE}")
-  private String service;
+  @Value("${SERVICE}")
+  private String serviceKey;
 
-  @Autowired 
+  @Autowired
   private PublicClient 공공데이터자동코드담당자;
 
-	@GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-	public String home() {
-    System.out.println("실행 전");
-    List<Map<String, Object>> 결과 = 자동코드작성담당자.getPost();
+  @Autowired
+  private PublicDataService service;
 
-    System.out.println("실행 후");
+  @GetMapping("/")
+  public String home() {
+    System.out.println("HomeController - home()");
+    
+    return "index";
+  }
 
-    // 맵타입을 문자로 변경해서 브라우저로 보내기!
-		return 결과.toString();
-	}
   @GetMapping(value = "/data")
-  public String publicData(){
+  public String publicData() {
+
+    System.out.println("공공데이터 호출 전!");
 
     JsonNode 결과 = 공공데이터자동코드담당자
-          .getLoan(service, 
-                    "1",
-                    "10", 
-                    "json");
+        .getLoan(serviceKey,
+            "1",
+            "10",
+            "json");
 
     // 필요한 부분만 꺼내기(경로로 바로 접근)
     JsonNode 파싱결과 = 결과.at("/response/body/items/item");
-
-          System.out.println("공공데이터 호출 후!");
+    System.out.println("공공데이터 호출 후 !");
 
     String 결과정리 = "";
 
-    for(JsonNode 상품한개  : 파싱결과){
+    for (JsonNode 상품한개 : 파싱결과) {
 
       결과정리 += 상품한개.get("finPrdNm").asString();
       결과정리 += " / ";
@@ -63,7 +67,9 @@ public class HomeController {
 
     return 결과정리;
   }
+
 }
+
 /*
 OpenFeign
  - 자바에서 다른 서버의 API를 쉽게 호출할 수 있는 도구!
@@ -82,5 +88,14 @@ OpenFeign 사용할 때
 1. main 파일에 가서 @EnableFeignClients 추가하기
 2. 외부 서버에서 할 일 데이터 1개를 가져오는 코드를 작성한다.
    규칙이 바뀌면 안되기 때문에 인터페이스로 고정!
+
+===============================
+// System.out.println("실행 전");
+    // List<Map<String, Object>> 결과 = 자동코드작성담당자.getPosts();
+
+    // service.getLoan();
+    // System.out.println("실행 후");
+
+    // 맵타일을 문자로 변경해서 브라우저로 보내기!
 
 */
