@@ -10,3 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run : ls -l
+
+      #자바 코드를 검사하기 위해서는 JDK를 다운
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
