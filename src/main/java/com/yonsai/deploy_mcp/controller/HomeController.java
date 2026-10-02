@@ -23,7 +23,7 @@ public class HomeController {
   @Autowired
   private TestClient 자동코드작성담당자;
 
-  @Value("${SERVICE}")
+  @Value("${service-key}")
   private String serviceKey;
 
   @Autowired

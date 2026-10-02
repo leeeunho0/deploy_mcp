@@ -11,7 +11,7 @@ import tools.jackson.databind.JsonNode;
 @Service
 public class PublicDataService {
 
-  @Value("${SERVICE}")
+  @Value("${service-key}")
   private String serviceKey;
 
   @Autowired
