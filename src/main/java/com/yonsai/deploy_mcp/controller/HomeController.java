@@ -1,15 +1,29 @@
 package com.yonsai.deploy_mcp.controller;
 
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yonsai.deploy_mcp.client.TestClient;
+
 @RestController
 public class HomeController {
 
+  @Autowired 
+  private TestClient 자동코드작성담당자;
+
 	@GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
 	public String home() {
-		return "index";
+    System.out.println("실행 전");
+    Map<String, Object> 결과 = 자동코드작성담당자.getPost();
+
+    System.out.println("실행 후");
+
+    // 맵타입을 문자로 변경해서 브라우저로 보내기!
+		return 결과.toString();
 	}
 }
 /*
@@ -29,7 +43,5 @@ OpenFeign 사용할 때
 1. main 파일에 가서 @EnableFeignClients 추가하기
 2. 외부 서버에서 할 일 데이터 1개를 가져오는 코드를 작성한다.
    규칙이 바뀌면 안되기 때문에 인터페이스로 고정!
-
-
 
 */
