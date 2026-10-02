@@ -1,13 +1,18 @@
 package com.yonsai.deploy_mcp.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yonsai.deploy_mcp.client.PublicClient;
 import com.yonsai.deploy_mcp.client.TestClient;
+
+import tools.jackson.databind.JsonNode;
 
 @RestController
 public class HomeController {
@@ -15,16 +20,49 @@ public class HomeController {
   @Autowired 
   private TestClient 자동코드작성담당자;
 
+  @Value ("${SERVICE}")
+  private String service;
+
+  @Autowired 
+  private PublicClient 공공데이터자동코드담당자;
+
 	@GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
 	public String home() {
     System.out.println("실행 전");
-    Map<String, Object> 결과 = 자동코드작성담당자.getPost();
+    List<Map<String, Object>> 결과 = 자동코드작성담당자.getPost();
 
     System.out.println("실행 후");
 
     // 맵타입을 문자로 변경해서 브라우저로 보내기!
 		return 결과.toString();
 	}
+  @GetMapping(value = "/data")
+  public String publicData(){
+
+    JsonNode 결과 = 공공데이터자동코드담당자
+          .getLoan(service, 
+                    "1",
+                    "10", 
+                    "json");
+
+    // 필요한 부분만 꺼내기(경로로 바로 접근)
+    JsonNode 파싱결과 = 결과.at("/response/body/items/item");
+
+          System.out.println("공공데이터 호출 후!");
+
+    String 결과정리 = "";
+
+    for(JsonNode 상품한개  : 파싱결과){
+
+      결과정리 += 상품한개.get("finPrdNm").asString();
+      결과정리 += " / ";
+      결과정리 += "최대 한도: " + 상품한개.get("lnLmt").asString();
+      결과정리 += "</br>"; // 줄바꿈 기호!
+      System.out.println(결과정리);
+    }
+
+    return 결과정리;
+  }
 }
 /*
 OpenFeign
@@ -32,6 +70,7 @@ OpenFeign
  - 원래라면 코드를 직접 작성하지만 OpenFeign 요청 주소를 적으면
    코드를 자동으로 만들어준다.
  - 자바버전 + spring ai버전 + OpenFeign 버전 확인 꼭!(호환성)
+ - 자동인코딩이 되기 때문에 API_KEY를 가져올때는 인코딩이 되지 않은 디코딩키를 사용한다.
 
 AI -> MCP 도구 호출: 대출상품 조회해줘!
 MCP -> OpenFeign 호출

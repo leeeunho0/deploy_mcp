@@ -1,5 +1,6 @@
 package com.yonsai.deploy_mcp.client;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,8 +15,11 @@ public interface TestClient {
   // 추가 경로
   // getPosts()호출하면 /post/1 로 GET요청을 보내고
   // 응답을 key:valus 값으로 받는 Map형식으로 받아줘!
-  @GetMapping ("/posts/1")
-  Map<String,Object> getPost();
+  // @GetMapping ("/posts/1")
+  // Map<String,Object> getPost();
 
+  // 여러개를 가져올때 사용하는 방법
+  @GetMapping ("/posts")
+  List<Map<String,Object>> getPost();
 
 }
