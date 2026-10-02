@@ -16,3 +16,8 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+      #git actions안에 컴퓨터한테 그래들 실행해라!
+      - run: chmod +x ./gradlew
+
+      #jar가 만들어졌는지 확인하기
+      - run: ls -l build/libs
